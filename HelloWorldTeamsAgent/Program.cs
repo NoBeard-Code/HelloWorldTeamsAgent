@@ -15,7 +15,16 @@ builder.AddAgent<MyAgent>();
 
 var app = builder.Build();
 
-//app.MapDefaultAgentEndpoints();
-app.MapAgentEndpoints(requireAuth: false);
+if (app.Environment.IsProduction())
+{
+    app.MapDefaultAgentEndpoints();
+}
+else
+{
+    // use Playground in development for testing and debugging:
+    // agentsplayground -e "https://c58c37m6-5163.eun1.devtunnels.ms/api/messages" -c "emulator"
+
+    app.MapAgentEndpoints(requireAuth: false);
+}
 
 app.Run();
