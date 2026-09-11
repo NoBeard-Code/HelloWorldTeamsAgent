@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.21.0" />
-    <PackageReference Include="Microsoft.Agents.Authentication.Msal" Version="1.8.77" />
-    <PackageReference Include="Microsoft.Agents.Builder" Version="1.8.77" />
-    <PackageReference Include="Microsoft.Agents.Extensions.MSTeams" Version="1.8.50" />
     <PackageReference Include="Microsoft.Agents.Hosting.AspNetCore" Version="1.8.77" />
-    <PackageReference Include="Microsoft.Agents.Storage" Version="1.8.77" />
     <PackageReference Include="Microsoft.Graph" Version="6.6.0" />
   </ItemGroup>
 

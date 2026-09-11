@@ -15,8 +15,7 @@ builder.AddAgent<MyAgent>();
 
 var app = builder.Build();
 
-app.MapDefaultAgentEndpoints();
-
-//app.MapAgentEndpoints(requireAuth: false);
+//app.MapDefaultAgentEndpoints();
+app.MapAgentEndpoints(requireAuth: false);
 
 app.Run();

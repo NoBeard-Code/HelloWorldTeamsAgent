@@ -1,10 +1,8 @@
-﻿using Azure.Identity;
-using Microsoft.Agents.Builder;
+﻿using Microsoft.Agents.Builder;
 using Microsoft.Agents.Builder.App;
 using Microsoft.Agents.Builder.State;
 using Microsoft.Agents.Core.Models;
 using Microsoft.Agents.Storage;
-using Microsoft.Graph;
 
 namespace HelloWorldTeamsAgent;
 
