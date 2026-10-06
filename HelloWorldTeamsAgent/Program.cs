@@ -1,6 +1,9 @@
+using Azure.AI.OpenAI;
 using HelloWorldTeamsAgent;
 using Microsoft.Agents.Hosting.AspNetCore;
 using Microsoft.Agents.Storage;
+using System.ClientModel;
+using Microsoft.Extensions.AI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +12,24 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddAuthorization();
 
-builder.AddAgentApplicationOptions();
+var endpoint = builder.Configuration["AzureOpenAI:Endpoint"]!;
+var apiKey = builder.Configuration["AzureOpenAI:ApiKey"]!;
+var model = builder.Configuration["AzureOpenAI:DeploymentName"]!;
 
+var openAIClient = new AzureOpenAIClient(
+    new Uri(endpoint), 
+    new ApiKeyCredential(apiKey),
+    new AzureOpenAIClientOptions(AzureOpenAIClientOptions.ServiceVersion.V2024_10_21));
+
+var chatClient = openAIClient
+    .GetChatClient(model)
+    .AsIChatClient();
+
+builder.Services.AddChatClient(chatClient)
+    .UseFunctionInvocation()
+    .UseLogging();
+
+builder.AddAgentApplicationOptions();
 builder.AddAgent<MyAgent>();
 
 var app = builder.Build();
