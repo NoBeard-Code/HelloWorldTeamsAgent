@@ -1,9 +1,11 @@
-﻿using Microsoft.Agents.Builder;
+﻿using Azure.Identity;
+using Microsoft.Agents.Builder;
 using Microsoft.Agents.Builder.App;
 using Microsoft.Agents.Builder.State;
 using Microsoft.Agents.Core.Models;
 using Microsoft.Agents.Storage;
 using Microsoft.Extensions.AI;
+using Microsoft.Graph;
 
 namespace HelloWorldTeamsAgent;
 
@@ -20,6 +22,10 @@ public class MyAgent(IStorage storage, IChatClient chatClient)
         CancellationToken cancellationToken)
     {
         var userInput = turnContext.Activity.Text ?? "(no text)";
+
+        //var graph = new GraphServiceClient(new DefaultAzureCredential());
+        //var me = await graph.Me.GetAsync();
+        //var userName = me?.DisplayName ?? "unknown user";
 
         var response = await chatClient.GetResponseAsync(
         [
