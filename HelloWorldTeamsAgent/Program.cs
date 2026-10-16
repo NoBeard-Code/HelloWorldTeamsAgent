@@ -4,11 +4,16 @@ using Microsoft.Agents.Hosting.AspNetCore;
 using Microsoft.Agents.Storage;
 using System.ClientModel;
 using Microsoft.Extensions.AI;
+using HelloWorldTeamsAgent.Services;
+using HelloWorldTeamsAgent.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IStorage, MemoryStorage>();
 builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<GraphMeetingService>();
+builder.Services.AddSingleton<MeetingPreparationTool>();
 
 builder.Services.AddAuthorization();
 
