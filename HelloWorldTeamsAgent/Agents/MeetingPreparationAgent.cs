@@ -6,9 +6,9 @@ using Microsoft.Agents.Core.Models;
 using Microsoft.Agents.Storage;
 using Microsoft.Extensions.AI;
 
-namespace HelloWorldTeamsAgent;
+namespace HelloWorldTeamsAgent.Agents;
 
-public class MyAgent(
+public class MeetingPreparationAgent(
     IStorage storage,
     IChatClient chatClient,
     MeetingPreparationTool meetingPreparationTool) 

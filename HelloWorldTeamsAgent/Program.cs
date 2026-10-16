@@ -1,11 +1,11 @@
 using Azure.AI.OpenAI;
-using HelloWorldTeamsAgent;
 using Microsoft.Agents.Hosting.AspNetCore;
 using Microsoft.Agents.Storage;
 using System.ClientModel;
 using Microsoft.Extensions.AI;
 using HelloWorldTeamsAgent.Services;
 using HelloWorldTeamsAgent.Tools;
+using HelloWorldTeamsAgent.Agents;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +35,7 @@ builder.Services.AddChatClient(chatClient)
     .UseLogging();
 
 builder.AddAgentApplicationOptions();
-builder.AddAgent<MyAgent>();
+builder.AddAgent<MeetingPreparationAgent>();
 
 var app = builder.Build();
 
