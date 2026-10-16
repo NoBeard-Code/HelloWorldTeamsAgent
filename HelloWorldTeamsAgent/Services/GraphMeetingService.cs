@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Microsoft.Graph;
+using System.Text.Json;
 
 namespace HelloWorldTeamsAgent.Services;
 
@@ -44,40 +45,7 @@ public sealed class GraphMeetingService
 
             var nextMeeting = events[0];
 
-            var attendees = nextMeeting.Attendees?
-                .Select(a => a.EmailAddress?.Name ?? a.EmailAddress?.Address ?? "Unknown")
-                .Where(name => !string.IsNullOrWhiteSpace(name))
-                .Distinct()
-                .ToList() ?? [];
-
-            var start = DateTime.TryParse(nextMeeting.Start?.DateTime, out var startDate) ? startDate : DateTime.UtcNow;
-            var end = DateTime.TryParse(nextMeeting.End?.DateTime, out var endDate) ? endDate : DateTime.UtcNow.AddHours(1);
-
-            var lines = new List<string>
-            {
-                nextMeeting.Subject ?? "Meeting",
-                $"{start:yyyy-MM-dd HH:mm} - {end:yyyy-MM-dd HH:mm}",
-                string.Empty,
-                "Attendees:"
-            };
-
-            if (attendees.Count == 0)
-            {
-                lines.Add("- No attendees found");
-            }
-            else
-            {
-                foreach (var attendee in attendees)
-                {
-                    lines.Add($"- {attendee}");
-                }
-            }
-
-            lines.Add(string.Empty);
-            lines.Add("Agenda:");
-            lines.Add(nextMeeting.Body?.Content ?? "No agenda available");
-
-            return string.Join(Environment.NewLine, lines);
+            return JsonSerializer.Serialize(nextMeeting);
         }
         catch (Exception ex)
         {
