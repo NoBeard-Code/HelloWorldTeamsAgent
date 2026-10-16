@@ -1,17 +1,9 @@
 {
   "profiles": {
-    "local": {
+    "https": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7163;http://localhost:5163;"
-    },
-    "cloud": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7163;http://localhost:5163;"
