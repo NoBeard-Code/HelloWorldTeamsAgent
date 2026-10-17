@@ -12,10 +12,10 @@ public sealed class MeetingPreparationTool(GraphMeetingService graphMeetingServi
     {       
         var aadObjectId = GetUserIdFromGraphClient();
 
-        return await graphMeetingService.GetMeetingBriefingAsync(aadObjectId, cancellationToken);
+        return await graphMeetingService.GetMeetingBriefingAsync(aadObjectId, cancellationToken) ?? string.Empty;
     }
 
-    private static string GetUserIdFromGraphClient()
+    internal static string GetUserIdFromGraphClient()
     {
         var credential = new DefaultAzureCredential();
         var graphClient = new GraphServiceClient(credential);

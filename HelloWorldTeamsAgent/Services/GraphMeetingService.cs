@@ -22,11 +22,11 @@ public sealed class GraphMeetingService
         _graphClient = new GraphServiceClient(credential, scopes);
     }
 
-    public async Task<string> GetMeetingBriefingAsync(string? aadObjectId, CancellationToken cancellationToken = default)
+    public async Task<string?> GetMeetingBriefingAsync(string? aadObjectId, CancellationToken cancellationToken = default)
     {
         if (_graphClient is null || string.IsNullOrWhiteSpace(aadObjectId))
         {
-            return BuildFallbackBriefing();
+            return null;
         }
 
         try
@@ -40,7 +40,7 @@ public sealed class GraphMeetingService
 
             if (upcomingEvents?.Value is not { Count: > 0 } events)
             {
-                return BuildFallbackBriefing();
+                return null;
             }
 
             var nextMeeting = events[0];
@@ -50,24 +50,7 @@ public sealed class GraphMeetingService
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Error retrieving meeting briefing: {ex.Message}");
-
-            // Fallback keeps the demo working even when Graph access is not yet configured.
-            return BuildFallbackBriefing();
+            return null;
         }
-    }
-    private static string BuildFallbackBriefing()
-    {
-        return """
-            Architecture Review Meeting
-            14:00 - 15:00
-            Attendees:
-                        - John Smith
-                        - Ana Novak
-            Open actions:
-                        - API versioning decision
-                        - Deployment approval
-            Recent discussion:
-                        - Team agreed to move to .NET 10
-            """;
-    }
+    }   
 }

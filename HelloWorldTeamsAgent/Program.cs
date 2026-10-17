@@ -15,7 +15,13 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<GraphMeetingService>();
 builder.Services.AddSingleton<MeetingPreparationTool>();
 
+builder.Services.AddSingleton<ConversationReferenceStore>();
+builder.Services.AddHostedService<MeetingReminderService>();
+
 builder.Services.AddAuthorization();
+
+// this forces User Secrets to load even in non-Development
+builder.Configuration.AddUserSecrets<Program>(optional: true, reloadOnChange: true);
 
 var endpoint = builder.Configuration["AzureOpenAI:Endpoint"]!;
 var apiKey = builder.Configuration["AzureOpenAI:ApiKey"]!;

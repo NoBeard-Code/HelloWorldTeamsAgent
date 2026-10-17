@@ -1,4 +1,5 @@
-﻿using HelloWorldTeamsAgent.Tools;
+﻿using HelloWorldTeamsAgent.Services;
+using HelloWorldTeamsAgent.Tools;
 using Microsoft.Agents.Builder;
 using Microsoft.Agents.Builder.App;
 using Microsoft.Agents.Builder.State;
@@ -10,6 +11,7 @@ namespace HelloWorldTeamsAgent.Agents;
 
 public class MeetingPreparationAgent(
     IStorage storage,
+    ConversationReferenceStore conversationReferenceStore,
     IChatClient chatClient,
     MeetingPreparationTool meetingPreparationTool) 
     : AgentApplication(new AgentApplicationOptions(storage)
@@ -23,9 +25,12 @@ public class MeetingPreparationAgent(
         ITurnState turnState,
         CancellationToken cancellationToken)
     {
+        var reference = turnContext.Activity.GetConversationReference();
+        conversationReferenceStore.Save(reference.Conversation.Id, reference);
+
         var userInput = turnContext.Activity.Text ?? "(no text)";
 
-        //var aadObjectId = turnContext.Activity.From?.AadObjectId;
+        var aadObjectId = turnContext.Activity.From?.AadObjectId;
 
         var tools = new[]
         {
