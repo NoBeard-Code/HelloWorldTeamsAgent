@@ -1,6 +1,6 @@
-﻿using HelloWorldTeamsAgent.Tools;
-using Microsoft.Agents.Core.Models;
+﻿using Microsoft.Agents.Core.Models;
 using Microsoft.Agents.Hosting.AspNetCore;
+using Microsoft.Extensions.AI;
 
 namespace HelloWorldTeamsAgent.Services;
 
@@ -8,6 +8,7 @@ public sealed class MeetingReminderService(
     ConversationReferenceStore store,
     GraphMeetingService graphMeetingService,
     IConfiguration configuration,
+    IChatClient chatClient,
     CloudAdapter cloudAdapter) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -33,7 +34,7 @@ public sealed class MeetingReminderService(
 
     private async Task SendReminderAsync(ConversationReference reference, CancellationToken cancellationToken)
     {
-        var aadObjectId = MeetingPreparationTool.GetUserIdFromGraphClient();
+        var aadObjectId = reference.User?.AadObjectId;
 
         var meetingInfo = await graphMeetingService.GetMeetingBriefingAsync(aadObjectId, cancellationToken);
 
@@ -42,8 +43,12 @@ public sealed class MeetingReminderService(
             return;
         }
 
+        var reminderText = await BuildReminderMessageAsync(
+                    meetingInfo,
+                    cancellationToken);
+
         var activity = Activity.CreateMessageActivity()
-            .WithText($"Reminder: You have an upcoming meeting. Here are the details:\n{meetingInfo}");
+            .WithText(reminderText);
 
         var agentAppId = configuration["AzureAd:ClientId"];
 
@@ -55,5 +60,21 @@ public sealed class MeetingReminderService(
                 await turnContext.SendActivityAsync(activity, ct);
             },
             cancellationToken);
+    }
+
+    private async Task<string> BuildReminderMessageAsync(
+        string briefing,
+        CancellationToken cancellationToken)
+    {
+        var response = await chatClient.GetResponseAsync(
+        [
+            new ChatMessage(
+                ChatRole.System,
+                "You are a Microsoft Teams meeting assistant. Write a brief proactive reminder in plain language, friendly and concise. Mention the meeting is starting soon and ask if the user wants a briefing."),
+            new ChatMessage(ChatRole.User, briefing)
+        ],
+        cancellationToken: cancellationToken);
+
+        return response.Text;
     }
 }
