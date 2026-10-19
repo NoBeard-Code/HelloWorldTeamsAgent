@@ -7,6 +7,7 @@ namespace HelloWorldTeamsAgent.Services;
 public sealed class MeetingReminderService(
     ConversationReferenceStore store,
     GraphMeetingService graphMeetingService,
+    IConfiguration configuration,
     CloudAdapter cloudAdapter) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,8 +45,10 @@ public sealed class MeetingReminderService(
         var activity = Activity.CreateMessageActivity()
             .WithText($"Reminder: You have an upcoming meeting. Here are the details:\n{meetingInfo}");
 
+        var agentAppId = configuration["AzureAd:ClientId"];
+
         await cloudAdapter.ContinueConversationAsync(
-            "MicrosoftTeamsBot",
+            agentAppId,
             reference,
             async (turnContext, ct) =>
             {
